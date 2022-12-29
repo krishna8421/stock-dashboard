@@ -29,7 +29,8 @@ const CandleChart = ({ className, stockName }: Props) => {
     if (data === undefined) return;
     const chart = Plot.plot({
       x: {
-        grid: true,
+        label: "Date",
+        tickFormat: (d: any) => "",
       },
       y: {
         grid: true,
@@ -48,7 +49,7 @@ const CandleChart = ({ className, stockName }: Props) => {
           x: "date",
           y1: "open",
           y2: "close",
-          stroke: (d: any) => Math.sign(d.close - d.open),
+          stroke: (d: any) => Math.sign(d.open-d.close),
           strokeWidth: 4,
           strokeLinecap: "round",
         }),
@@ -59,7 +60,7 @@ const CandleChart = ({ className, stockName }: Props) => {
 
     return () => chart.remove();
   }, [data]);
-  console.log(isLoading);
+
   return (
     <div className={className}>
       <div className="" ref={chartRef as any} />

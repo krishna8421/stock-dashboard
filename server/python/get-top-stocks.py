@@ -14,8 +14,112 @@ else:
 
 yf.pdr_override()
 
-tickers = si.tickers_nifty50()
-tickers.remove('MM.NS')
+url = "./ind_nifty100list.csv"
+
+tickers = [
+  "ACC.NS",
+  "ADANIENT.NS",
+  "ADANIGREEN.NS",
+  "ADANIPORTS.NS",
+  "ATGL.NS",
+  "ADANITRANS.NS",
+  "AMBUJACEM.NS",
+  "APOLLOHOSP.NS",
+  "ASIANPAINT.NS",
+  "DMART.NS",
+  "AXISBANK.NS",
+  "BAJAJ-AUTO.NS",
+  "BAJFINANCE.NS",
+  "BAJAJFINSV.NS",
+  "BAJAJHLDNG.NS",
+  "BANDHANBNK.NS",
+  "BANKBARODA.NS",
+  "BERGEPAINT.NS",
+  "BEL.NS",
+  "BPCL.NS",
+  "BHARTIARTL.NS",
+  "BIOCON.NS",
+  "BOSCHLTD.NS",
+  "BRITANNIA.NS",
+  "CHOLAFIN.NS",
+  "CIPLA.NS",
+  "COALINDIA.NS",
+  "COLPAL.NS",
+  "DLF.NS",
+  "DABUR.NS",
+  "DIVISLAB.NS",
+  "DRREDDY.NS",
+  "EICHERMOT.NS",
+  "NYKAA.NS",
+  "GAIL.NS",
+  "GLAND.NS",
+  "GODREJCP.NS",
+  "GRASIM.NS",
+  "HCLTECH.NS",
+  "HDFCAMC.NS",
+  "HDFCBANK.NS",
+  "HDFCLIFE.NS",
+  "HAVELLS.NS",
+  "HEROMOTOCO.NS",
+  "HINDALCO.NS",
+  "HAL.NS",
+  "HINDUNILVR.NS",
+  "HDFC.NS",
+  "ICICIBANK.NS",
+  "ICICIGI.NS",
+  "ICICIPRULI.NS",
+  "ITC.NS",
+  "IOC.NS",
+  "IRCTC.NS",
+  "INDUSTOWER.NS",
+  "INDUSINDBK.NS",
+  "NAUKRI.NS",
+  "INFY.NS",
+  "INDIGO.NS",
+  "JSWSTEEL.NS",
+  "KOTAKBANK.NS",
+  "LTIM.NS",
+  "LT.NS",
+  "LICI.NS",
+  "M&M.NS",
+  "MARICO.NS",
+  "MARUTI.NS",
+  "MPHASIS.NS",
+  "MUTHOOTFIN.NS",
+  "NTPC.NS",
+  "NESTLEIND.NS",
+  "ONGC.NS",
+  "PAYTM.NS",
+  "PIIND.NS",
+  "PIDILITIND.NS",
+  "POWERGRID.NS",
+  "PGHH.NS",
+  "RELIANCE.NS",
+  "SBICARD.NS",
+  "SBILIFE.NS",
+  "SRF.NS",
+  "MOTHERSON.NS",
+  "SHREECEM.NS",
+  "SIEMENS.NS",
+  "SBIN.NS",
+  "SUNPHARMA.NS",
+  "TCS.NS",
+  "TATACONSUM.NS",
+  "TATAMOTORS.NS",
+  "TATAPOWER.NS",
+  "TATASTEEL.NS",
+  "TECHM.NS",
+  "TITAN.NS",
+  "TORNTPHARM.NS",
+  "UPL.NS",
+  "ULTRACEMCO.NS",
+  "MCDOWELL-N.NS",
+  "VEDL.NS",
+  "WIPRO.NS",
+  "ZOMATO.NS"
+]
+
+# tickers.remove('MM.NS')
 
 index_name = '^NSEI'
 start_date = datetime.datetime.now() - datetime.timedelta(days=365)
@@ -27,12 +131,12 @@ index_df = pdr.get_data_yahoo(index_name, start_date, end_date)
 index_df['Percent Change'] = index_df['Adj Close'].pct_change()
 index_return = (index_df['Percent Change'] + 1).cumprod()[-1]
 
-for ticker in tickers:
 
+for ticker in tickers:
     df = pdr.get_data_yahoo(ticker, start_date, end_date)
     if(os.path.isfile(f'data/{ticker}.csv')):
         os.remove(f'data/{ticker}.csv')
-        print(f'data/{ticker}.csv  is removed')
+        print(f'{ticker}.csv  is removed')
     df.to_csv(f'data/{ticker}.csv')
 
     
@@ -113,5 +217,7 @@ for stock in rs_stocks:
 
 # save the top stocks in a file
 with open('topStocks.json', 'w') as f:
-    f.write(json.dumps(topStocks))
+    f.write(json.dumps({
+        'topStocks': topStocks
+    }))
     f.close()

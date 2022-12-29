@@ -14,8 +14,6 @@ const createAppWithMiddleware = (): Express => {
   return app;
 };
 
-// runEveryDay(getStocksData);
-
 const main = async () => {
   const app = createAppWithMiddleware();
   try {
@@ -30,6 +28,8 @@ const main = async () => {
 };
 
 main();
+
+runEveryDay(getStocksData);
 
 const closeApp = () => {
   disconnect().then(() => {

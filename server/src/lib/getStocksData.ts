@@ -1,15 +1,24 @@
 import { cleanJson } from "./index";
 import { execSync } from "child_process";
-import fs from "fs";
+import fs from "fs-extra";
 import { TopStocks } from "../models";
 import { connectToDB } from "./connectToDB";
 
-export const getStocksData = async () => {
+export interface ITopStockData {
+  stockData: string;
+  rsRating: number;
+  fiftyDayMA: number;
+  oneFiftyDayMA: number;
+  twoHundredDayMA: number;
+  fiftyTwoWeekLow: number;
+  fiftyTwoWeekHigh: number;
+}
 
+export const getStocksData = async () => {
   await connectToDB();
 
-  execSync("pip install -r python/requirements.txt");
-  execSync("python python/get-top-stocks.py");
+  execSync("pip3 install -r requirements.txt");
+  execSync("python3 python/get-top-stocks.py");
 
   if (!fs.existsSync("topStocks.json")) {
     throw new Error("topStocks.json not found");
@@ -18,7 +27,12 @@ export const getStocksData = async () => {
   cleanJson("topStocks.json");
 
   const data = fs.readFileSync("topStocks.json", "utf8");
-  const topStocks = JSON.parse(data);
+  const topStocksString = JSON.parse(data);
+  let topStocks: ITopStockData[] = [];
+
+  topStocksString.topStocks.map((s: any) => {
+    topStocks.push(JSON.parse(s));
+  });
 
   TopStocks.deleteMany({}, () => {
     console.log("Deleted old data");
@@ -31,5 +45,5 @@ export const getStocksData = async () => {
     console.log(error);
   }
 
-  // execSync("yarn clean");
+  execSync("yarn clean");
 };
